@@ -1,0 +1,31 @@
+{
+  "name": "sequlize",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonimani37/node-sequlize.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sonimani37/node-sequlize/issues"
+  },
+  "homepage": "https://github.com/sonimani37/node-sequlize#readme",
+  "devDependencies": {
+    "sequelize": "^6.33.0",
+    "sequelize-cli": "^6.6.1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.6.1",
+    "nodemon": "^3.0.1"
+  }
+}
