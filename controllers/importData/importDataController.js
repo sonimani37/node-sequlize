@@ -181,23 +181,23 @@ async function processSheet(sheetName, sheetData, governanceId, countryId, year,
                         });
                         qname_id = questName.dataValues.id;
                     }
-                    var question_id;
-                    const quest = await Questions.create({
-                        question_score: questionScore,
-                        qname_id: qname_id,
-                        country_id: countryId,
-                        years: year,
-                        governance_id: governanceId,
-                        development_id: development_id,
-                        ultimate_id: ultimate_id,
-                        taxonomy_id: taxonomy_id,
-                        indicator_id: indicator_id,
-                        actual_score: actualScore,
-                        status: status,
-                        links: links,
-                        text: text,
-                    });
-                    question_id = quest.dataValues.id;
+                    // var question_id;
+                    // const quest = await Questions.create({
+                    //     question_score: questionScore,
+                    //     qname_id: qname_id,
+                    //     country_id: countryId,
+                    //     years: year,
+                    //     governance_id: governanceId,
+                    //     development_id: development_id,
+                    //     ultimate_id: ultimate_id,
+                    //     taxonomy_id: taxonomy_id,
+                    //     indicator_id: indicator_id,
+                    //     actual_score: actualScore,
+                    //     status: status,
+                    //     links: links,
+                    //     text: text,
+                    // });
+                    // question_id = quest.dataValues.id;
                 }
             } catch (error) {
                 console.error('Error executing query', error);
@@ -293,6 +293,7 @@ async function processSheetTwo(sheetName, sheetData, governanceId, year, index) 
                             },
                         });
                         if (questionCount > 0) {
+                            console.log(`Country ID exist in the question_table.`);
                             try {
                                 await Questions.destroy({
                                     where: {
@@ -305,7 +306,7 @@ async function processSheetTwo(sheetName, sheetData, governanceId, year, index) 
                                 console.error('Error deleting questions:', error);
                             }
                         } else {
-                            console.log(`Country ID ${countryId} does not exist in the question_table.`);
+                            console.log(`Country ID  does not exist in the question_table.`);
                         }
                     }
                     for (const [index, countryName] of Object.keys(data).entries()) {
@@ -314,7 +315,7 @@ async function processSheetTwo(sheetName, sheetData, governanceId, year, index) 
                             const countryData = await Country.findOne({
                                 where: { country_name: countryName },
                             });
-                            var country_id
+                            var country_id;
                             if (countryData) {
                                 country_id = countryData.dataValues.id;
                             }
@@ -330,20 +331,20 @@ async function processSheetTwo(sheetName, sheetData, governanceId, year, index) 
                                 });
                                 qname_id = questName.dataValues.id;
                             }
-                            var question_id;
-                            const quest = await Questions.create({
-                                question_score: questionScore,
-                                qname_id: qname_id,
-                                country_id: countryId,
-                                years: year,
-                                governance_id: governanceId,
-                                development_id: development_id,
-                                ultimate_id: ultimate_id,
-                                taxonomy_id: taxonomy_id,
-                                indicator_id: indicator_id,
-                                actual_score: actual_score,
-                            });
-                            question_id = quest.dataValues.id;
+                            // var question_id;
+                            // const quest = await Questions.create({
+                            //     question_score: questionScore,
+                            //     qname_id: qname_id,
+                            //     country_id: country_id,
+                            //     years: year,
+                            //     governance_id: governanceId,
+                            //     development_id: development_id,
+                            //     ultimate_id: ultimate_id,
+                            //     taxonomy_id: taxonomy_id,
+                            //     indicator_id: indicator_id,
+                            //     actual_score: actual_score,
+                            // });
+                            // question_id = quest.dataValues.id;
                         }
                     }
                 }
