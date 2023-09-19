@@ -25,6 +25,15 @@ npx sequelize-cli db:seed: --seed fileName(add countries) (particualr data inser
 
 
 
+# drop and recreate the database, table also insert data
+npx sequelize-cli db:drop
+npx sequelize-cli db:create
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
+
+
+
+
 sequelize-cli db:migrate                        Run pending migrations
   sequelize-cli db:migrate:schema:timestamps:add  Update migration table to have timestamps
   sequelize-cli db:migrate:status                 List the status of all migrations
@@ -48,3 +57,6 @@ sequelize-cli db:migrate                        Run pending migrations
   sequelize-cli seed:generate                     Generates a new seed file
   sequelize-cli seed:create                       Generates a new seed file
 
+
+
+  ds

@@ -1,17 +1,22 @@
 var express = require("express");
 var router = express.Router();
 
-const countryRouter = require('./countries/countries-route')
+const countryRouter = require('./countries/countries-route');
+const importDataRouter = require('./importData/importData-route')
 
-//main-route
 router.get("/", (req, res) => {
-    console.log('innnnnn');
     res.status(200).json({
-        content: " Welcome 🙌 ",
+        content: " Welcome",
         status: 200,
     });
 });
 
+//countries
 router.use("/countries",countryRouter);
 
+//import Data
+router.use("/importData",importDataRouter);
+
 module.exports = router;
+
+

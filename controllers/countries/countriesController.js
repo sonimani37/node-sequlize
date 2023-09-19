@@ -1,19 +1,38 @@
-// const User = require("../../models").User;
+const Country = require("../../models").countries;
+const { Op } = require('sequelize'); // Import the Op (Operator) module
 
-const Country = require("../../models/countries");
-
-
-module.export = {
-    async getAllCountries(req,res){
+module.exports = {
+    async getAllCountries(req,resp){
         try {
             const countriesData = await Country.findAll();
-            console.log('----------------countriesData--------',countriesData);
-            let resp = {
+            let response = {
                 data:countriesData
             }
-            return res.status(200).json(resp)
+            // return resp.send(resp)
+            return resp.status(200).json(response)
         } catch (error) {
-            return res.status(500)(error)
+            // return resp.send(error)
+            return resp.status(500).json(error)
+        }
+    },
+
+    async countriesWithYear (req, resp){
+        try{     
+            let countries_id = req.body.countries;       
+            const countriesData = await Country.findAll({
+                where: {
+                id: {
+                        [Op.in]: countries_id, // Used the "in" operator to match multiple IDs
+                    },
+                },
+            });
+            let response = {
+                data:countriesData
+            }
+            return resp.status(200).json(response)
+        }catch(error){
+            resp.send(error);
         }
     }
+
 }

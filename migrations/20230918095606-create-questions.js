@@ -13,28 +13,56 @@ module.exports = {
         type: Sequelize.STRING
       },
       qname_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'questionNames',
+            key:'id'
+        }
       },
       country_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'countries',
+            key:'id'
+        }
       },
       years: {
         type: Sequelize.INTEGER
       },
       governance_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'governances',
+            key:'id'
+        }
       },
       development_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'developments',
+            key:'id'
+        }
       },
       ultimate_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'ultimates',
+            key:'id'
+        }
       },
       taxonomy_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'taxonomies',
+            key:'id'
+        }
       },
       indicator_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'indicators',
+            key:'id'
+        }
       },
       actual_score: {
         type: Sequelize.INTEGER

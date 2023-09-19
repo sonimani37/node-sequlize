@@ -13,7 +13,11 @@ module.exports = {
         type: Sequelize.STRING
       },
       governance_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'governances',
+            key:'id'
+        }
       },
       createdAt: {
         allowNull: false,

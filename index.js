@@ -13,10 +13,6 @@ app.use(logger('dev'));
 
 app.use('/api', router);
 
-// app.on('listening',function(){
-//     console.log('ok, server is running');
-// });
-
 app.listen(7000, (req,resp) => {
     console.log('server running');
 })

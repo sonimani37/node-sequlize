@@ -3,6 +3,9 @@ const countryController = require("../../controllers/countries/countriesControll
 
 var countryRouter = express.Router();
 
-countryRouter.get("/", countryController.getAllCountries);
+
+countryRouter.get("/list", countryController.getAllCountries);
+
+countryRouter.get("/with-years", countryController.countriesWithYear);
 
 module.exports = countryRouter;

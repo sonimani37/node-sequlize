@@ -13,7 +13,11 @@ module.exports = {
         type: Sequelize.STRING
       },
       taxonomy_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+            model:'taxonomies',
+            key:'id'
+        }
       },
       indicator_score: {
         type: Sequelize.INTEGER
