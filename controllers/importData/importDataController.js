@@ -59,7 +59,9 @@ module.exports = {
                 console.log('------------sheetName-------', sheetName);
                 const sheet = workbook.Sheets[sheetName];
                 const sheetData = xlsx.utils.sheet_to_json(sheet);
-                await processSheetTwo(sheetName, sheetData, governanceId, year, index);
+                // if(index == 5){
+                    await processSheetTwo(sheetName, sheetData, governanceId, year, index);
+                // }
             }
             resp.send('POST request received');
 
@@ -181,23 +183,23 @@ async function processSheet(sheetName, sheetData, governanceId, countryId, year,
                         });
                         qname_id = questName.dataValues.id;
                     }
-                    // var question_id;
-                    // const quest = await Questions.create({
-                    //     question_score: questionScore,
-                    //     qname_id: qname_id,
-                    //     country_id: countryId,
-                    //     years: year,
-                    //     governance_id: governanceId,
-                    //     development_id: development_id,
-                    //     ultimate_id: ultimate_id,
-                    //     taxonomy_id: taxonomy_id,
-                    //     indicator_id: indicator_id,
-                    //     actual_score: actualScore,
-                    //     status: status,
-                    //     links: links,
-                    //     text: text,
-                    // });
-                    // question_id = quest.dataValues.id;
+                    var question_id;
+                    const quest = await Questions.create({
+                        question_score: questionScore,
+                        qname_id: qname_id,
+                        country_id: countryId,
+                        years: year,
+                        governance_id: governanceId,
+                        development_id: development_id,
+                        ultimate_id: ultimate_id,
+                        taxonomy_id: taxonomy_id,
+                        indicator_id: indicator_id,
+                        actual_score: actualScore,
+                        status: status,
+                        links: links,
+                        text: text,
+                    });
+                    question_id = quest.dataValues.id;
                 }
             } catch (error) {
                 console.error('Error executing query', error);
@@ -214,144 +216,150 @@ async function processSheetTwo(sheetName, sheetData, governanceId, year, index) 
         'Funding and resources', 'Legal rules', 'Research Program and funding',
         'Literacy (patient+ workforce)'
     ];
-
+    console.log('-------sheetData.length-------',sheetData.length);
     for (let i = 0; i < sheetData.length; i++) {
         const data = sheetData[i];
-        if (data.Ultimate != undefined) {
-            const ultimate_id = data?.Ultimate;
-            var taxonomyName = data?.Taxonomy?.trimEnd();
-            var taxonomyScore;
-            if (typeof taxonomyName === 'string') {
-                const taxoScoreMatch = taxonomyName?.match(/\((\d+)\)/);
-                taxonomyScore = taxoScoreMatch ? parseInt(taxoScoreMatch[1]) : null;
-            }
-            var indicatorName = data.Indicators?.trimEnd();
-            var indicatorScore;
-            if (typeof indicatorName === 'string') {
-                const indicScoreMatch = indicatorName?.match(/\((\d+)\)/);
-                indicatorScore = indicScoreMatch ? parseInt(indicScoreMatch[1]) : null;
-                const inputString = indicatorName;
-                indicatorName = inputString.replace(/\(\d+\)/, "").trim();
-            }
-            var questionName = data.Questions?.trimEnd();
-            var questionScore;
-            if (typeof questionName === 'string') {
-                const actualScoreMatch = questionName?.match(/\((\d+)\)/);
-                questionScore = actualScoreMatch ? parseInt(actualScoreMatch[1]) : null;
-                const inputString = questionName;
-                questionName = inputString.replace(/\(\d+\)/, "").trim();
-            }
-            try {
-                const ultimateData = await Ultimates.findOne({
-                    where: { id: ultimate_id },
-                });
-                var development_id;
-                if (ultimateData) {
-                    development_id = ultimateData.dataValues.development_id;
-                } else {
-                    console.log('Ultimate not found');
+        // if(i == 2){
+            console.log(data);
+            if (data.Ultimate != undefined) {
+                const ultimate_id = data?.Ultimate;
+                var taxonomyName = data?.Taxonomy?.trimEnd();
+                var taxonomyScore;
+                if (typeof taxonomyName === 'string') {
+                    const taxoScoreMatch = taxonomyName?.match(/\((\d+)\)/);
+                    taxonomyScore = taxoScoreMatch ? parseInt(taxoScoreMatch[1]) : null;
                 }
-                var newTaxonomyName;
-                const filteredTaxonomy = await allTaxonomy.filter((taxonomy) => taxonomyName.includes(taxonomy));
-                if (filteredTaxonomy) {
-                    newTaxonomyName = filteredTaxonomy[0];
+                var indicatorName = data.Indicators?.trimEnd();
+                var indicatorScore;
+                if (typeof indicatorName === 'string') {
+                    const indicScoreMatch = indicatorName?.match(/\((\d+)\)/);
+                    indicatorScore = indicScoreMatch ? parseInt(indicScoreMatch[1]) : null;
+                    const inputString = indicatorName;
+                    indicatorName = inputString.replace(/\(\d+\)/, "").trim();
                 }
-                if (newTaxonomyName != undefined) {
-                    const taxonomyData = await Taxonomies.findOne({
-                        where: { taxonomy_name: newTaxonomyName },
+                var questionName = data.Questions?.trimEnd();
+                var questionScore;
+                if (typeof questionName === 'string') {
+                    const actualScoreMatch = questionName?.match(/\((\d+)\)/);
+                    questionScore = actualScoreMatch ? parseInt(actualScoreMatch[1]) : null;
+                    const inputString = questionName;
+                    questionName = inputString.replace(/\(\d+\)/, "").trim();
+                }
+                try {
+                    const ultimateData = await Ultimates.findOne({
+                        where: { id: ultimate_id },
                     });
-                    var taxonomy_id;
-                    if (taxonomyData) {
-                        taxonomy_id = taxonomyData.dataValues.id;
+                    var development_id;
+                    if (ultimateData) {
+                        development_id = ultimateData.dataValues.development_id;
                     } else {
-                        const taxo = await Taxonomies.create({
-                            taxonomy_name: newTaxonomyName,
-                            governance_id: governanceId,
-                        });
-                        taxonomy_id = taxo.dataValues.id;
+                        console.log('Ultimate not found');
                     }
-                    const indicatorData = await Indicators.findOne({
-                        where: { indicator_name: indicatorName },
-                    });
-                    var indicator_id;
-                    if (indicatorData) {
-                        indicator_id = indicatorData.dataValues.id;
-                    } else {
-                        const indic = await Indicators.create({
-                            indicator_name: indicatorName,
-                            indicator_score: indicatorScore,
-                            taxonomy_id: taxonomy_id,
-                        });
-                        indicator_id = indic.dataValues.id;
+                    var newTaxonomyName;
+                    const filteredTaxonomy = await allTaxonomy.filter((taxonomy) => taxonomyName.includes(taxonomy));
+                    if (filteredTaxonomy) {
+                        newTaxonomyName = filteredTaxonomy[0];
                     }
-                    if (index == 0 && i == 0) {
-                        const questionCount = await Questions.count({
-                            where: {
-                                years: year,
-                                ultimate_id: ultimate_id,
-                                governance_id: governanceId
-                            },
+                    if (newTaxonomyName != undefined) {
+                        const taxonomyData = await Taxonomies.findOne({
+                            where: { taxonomy_name: newTaxonomyName },
                         });
-                        if (questionCount > 0) {
-                            console.log(`Country ID exist in the question_table.`);
-                            try {
-                                await Questions.destroy({
-                                    where: {
-                                        years: year,
-                                        ultimate_id: ultimate_id,
-                                        governance_id: governanceId
-                                    },
-                                });
-                            } catch (error) {
-                                console.error('Error deleting questions:', error);
-                            }
+                        var taxonomy_id;
+                        if (taxonomyData) {
+                            taxonomy_id = taxonomyData.dataValues.id;
                         } else {
-                            console.log(`Country ID  does not exist in the question_table.`);
+                            const taxo = await Taxonomies.create({
+                                taxonomy_name: newTaxonomyName,
+                                governance_id: governanceId,
+                            });
+                            taxonomy_id = taxo.dataValues.id;
                         }
-                    }
-                    for (const [index, countryName] of Object.keys(data).entries()) {
-                        if (countryName != 'Ultimate' && countryName != 'Taxonomy' && countryName != 'Indicators' && countryName != 'Questions') {
-                            var actual_score = data[countryName];
-                            const countryData = await Country.findOne({
-                                where: { country_name: countryName },
+                        const indicatorData = await Indicators.findOne({
+                            where: { indicator_name: indicatorName },
+                        });
+                        var indicator_id;
+                        if (indicatorData) {
+                            indicator_id = indicatorData.dataValues.id;
+                        } else {
+                            const indic = await Indicators.create({
+                                indicator_name: indicatorName,
+                                indicator_score: indicatorScore,
+                                taxonomy_id: taxonomy_id,
                             });
-                            var country_id;
-                            if (countryData) {
-                                country_id = countryData.dataValues.id;
-                            }
-                            const questionNameData = await Questionnames.findOne({
-                                where: { question_name: questionName },
+                            indicator_id = indic.dataValues.id;
+                        }
+                        if (index == 0 && i == 0) {
+                            const questionCount = await Questions.count({
+                                where: {
+                                    years: year,
+                                    ultimate_id: ultimate_id,
+                                    governance_id: governanceId
+                                },
                             });
-                            var qname_id;
-                            if (questionNameData) {
-                                qname_id = questionNameData.dataValues.id;
+                            if (questionCount > 0) {
+                                console.log(`Country ID exist in the question_table.`);
+                                try {
+                                    await Questions.destroy({
+                                        where: {
+                                            years: year,
+                                            ultimate_id: ultimate_id,
+                                            governance_id: governanceId
+                                        },
+                                    });
+                                } catch (error) {
+                                    console.error('Error deleting questions:', error);
+                                }
                             } else {
-                                const questName = await Questionnames.create({
-                                    question_name: questionName,
-                                });
-                                qname_id = questName.dataValues.id;
+                                console.log(`Country ID  does not exist in the question_table.`);
                             }
-                            // var question_id;
-                            // const quest = await Questions.create({
-                            //     question_score: questionScore,
-                            //     qname_id: qname_id,
-                            //     country_id: country_id,
-                            //     years: year,
-                            //     governance_id: governanceId,
-                            //     development_id: development_id,
-                            //     ultimate_id: ultimate_id,
-                            //     taxonomy_id: taxonomy_id,
-                            //     indicator_id: indicator_id,
-                            //     actual_score: actual_score,
-                            // });
-                            // question_id = quest.dataValues.id;
+                        }
+                        for (const [index, countryName] of Object.keys(data).entries()) {
+                            if (countryName != 'Ultimate' && countryName != 'Taxonomy' && countryName != 'Indicators' && countryName != 'Questions') {
+
+                                var actual_score = (data[countryName] != ' ' && data[countryName]) ? data[countryName] : 0;
+                                // console.log(data);
+                                // console.log('-------------------------------actual_score-----------------------------',actual_score);
+                                const countryData = await Country.findOne({
+                                    where: { country_name: countryName },
+                                });
+                                var country_id;
+                                if (countryData) {
+                                    country_id = countryData.dataValues.id;
+                                }
+                                const questionNameData = await Questionnames.findOne({
+                                    where: { question_name: questionName },
+                                });
+                                var qname_id;
+                                if (questionNameData) {
+                                    qname_id = questionNameData.dataValues.id;
+                                } else {
+                                    const questName = await Questionnames.create({
+                                        question_name: questionName,
+                                    });
+                                    qname_id = questName.dataValues.id;
+                                }
+                                var question_id;
+                                const quest = await Questions.create({
+                                    question_score: questionScore,
+                                    qname_id: qname_id,
+                                    country_id: country_id,
+                                    years: year,
+                                    governance_id: governanceId,
+                                    development_id: development_id,
+                                    ultimate_id: ultimate_id,
+                                    taxonomy_id: taxonomy_id,
+                                    indicator_id: indicator_id,
+                                    actual_score: actual_score,
+                                });
+                                question_id = quest.dataValues.id;
+                            }
                         }
                     }
+                } catch (error) {
+                    console.error('Error executing query', error);
                 }
-            } catch (error) {
-                console.error('Error executing query', error);
             }
-        }
+        // }
     }
 }
 

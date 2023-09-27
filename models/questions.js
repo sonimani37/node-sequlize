@@ -1,7 +1,5 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
+const { Model} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class questions extends Model {
         /**
@@ -11,6 +9,18 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            questions.belongsTo(models.questionNames, { foreignKey: 'qname_id', as: 'questionNames' });
+
+            // Define the association to the "indicators" table
+            questions.belongsTo(models.indicators, { foreignKey: 'indicator_id', as: 'indicators' });
+
+            questions.belongsTo(models.taxonomies, { foreignKey: 'taxonomy_id', as: 'taxonomies' });
+
+            questions.belongsTo(models.ultimates, { foreignKey: 'ultimate_id', as: 'ultimates' });
+
+            questions.belongsTo(models.developments, { foreignKey: 'development_id', as: 'developments' });
+
+            questions.belongsTo(models.countries, { foreignKey: 'country_id', as: 'countries' });
         }
     }
     questions.init({
@@ -25,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         indicator_id: DataTypes.INTEGER,
         actual_score: DataTypes.INTEGER,
         status: DataTypes.STRING,
-        links: DataTypes.STRING,
+        links: DataTypes.TEXT,
         text: DataTypes.TEXT
     }, {
         sequelize,
